@@ -2,7 +2,7 @@
 export default function Home() {
   return (
     <main className="">
-      <h1>Home page</h1>
+      <h1>Caditor</h1>
     </main>
   );
 }
