@@ -1,8 +1,8 @@
 
 const ProjectsPage = () => {
   return (
-    <main className="ml-[20vw] w-4/5 bg-[hsl(var(--secondary))]">
-      Projects page
+    <main className="">
+      <h1>Projects page</h1>
     </main>
   )
 }
