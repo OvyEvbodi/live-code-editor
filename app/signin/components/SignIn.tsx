@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Google, GitHub } from '@mui/icons-material';
-import { signInWithGoogle } from "@/lib/auth-utils"
+import { signInWithGoogle, signInWithGithub } from "@/lib/auth-utils"
 
 const SignIn = () => {
   return (
@@ -14,7 +14,7 @@ const SignIn = () => {
         <Button>Sign in</Button>
       </form>
       <Button onClick={signInWithGoogle} className="mt-6 px-20 flex gap-4 bg-[hsl(var(--secondary))] text-[hsl(var(--foreground)) hover:text-[hsl(var(--background))]"><Google /> <span>Sign in with Google</span></Button>
-      <Button className="mt-6 px-20 flex gap-4 bg-[hsl(var(--secondary))] text-[hsl(var(--foreground)) hover:text-[hsl(var(--background))]"><GitHub /> <span>Sign in with GitHub</span></Button>
+      <Button onClick={signInWithGithub} className="mt-6 px-20 flex gap-4 bg-[hsl(var(--secondary))] text-[hsl(var(--foreground)) hover:text-[hsl(var(--background))]"><GitHub /> <span>Sign in with GitHub</span></Button>
     </div>
   )
 }
