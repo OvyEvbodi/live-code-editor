@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",

@@ -5,9 +5,9 @@ const TriangleSpinner = () => {
     <div>
       <Triangle
         visible={true}
-        height="80"
-        width="80"
-        color="#4fa94d"
+        height="120"
+        width="120"
+        color="#8b5cf6"
         ariaLabel="triangle-loading"
         wrapperStyle={{}}
         wrapperClass=""

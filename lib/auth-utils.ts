@@ -6,7 +6,7 @@ export const signInWithGoogle = async () => {
   const credentials = await signInWithPopup(auth, googleProvider);
 };
 
-export const handleSignOut = async () => {
+export const authSignOut = async () => {
   signOut(auth)
     .catch((error) => {
     console.log(error)
