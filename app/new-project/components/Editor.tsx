@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/resizable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHtml5, faCss3Alt, faJs } from "@fortawesome/free-brands-svg-icons";
+import { Settings, ExpandMore } from "@mui/icons-material";
 
 const Editor = () => {
   return (
@@ -15,9 +16,15 @@ const Editor = () => {
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel>
               <section className="h-full flex flex-col">
-                <div className="flex gap-2 bg-yellow-500 p-2">
-                  <h5 className="text-sm font-bold">html</h5>
-                  <FontAwesomeIcon icon={faHtml5} className="w-4"/>
+                <div className="flex justify-between">
+                  <div className="flex gap-2 p-1 px-4 bg-[hsl(var(--secondary))]">
+                    <FontAwesomeIcon icon={faHtml5} className="text-red-500 w-4"/>
+                    <h5 className="text-sm font-bold">html</h5>
+                  </div>
+                  <div className="cursor-pointer px-1">
+                  <Settings fontSize="small"/>
+                  <ExpandMore fontSize="small"/>
+                  </div>
                 </div>
                 <div className="flex-grow mt-2">
                   body
@@ -27,9 +34,15 @@ const Editor = () => {
             <ResizableHandle withHandle />
             <ResizablePanel>
               <section className="h-full flex flex-col">
-                <div className="flex gap-2 bg-blue-500 p-2">
-                  <h5 className="text-sm font-bold">css</h5>
-                  <FontAwesomeIcon icon={faCss3Alt} className="w-4"/>
+                <div className="flex justify-between">
+                  <div className="flex gap-2 p-1 px-4 bg-[hsl(var(--secondary))]">
+                    <FontAwesomeIcon icon={faCss3Alt} className="text-blue-500 w-4"/>
+                    <h5 className="text-sm font-bold">css</h5>
+                  </div>
+                  <div className="cursor-pointer px-1">
+                    <Settings fontSize="small"/>
+                    <ExpandMore fontSize="small"/>
+                  </div>
                 </div>
                 <div className="flex-grow mt-2">
                   body
@@ -39,10 +52,17 @@ const Editor = () => {
             <ResizableHandle withHandle />
             <ResizablePanel>
               <section className="h-full flex flex-col">
-                <div className="flex gap-2 bg-red-500 p-2">
-                  <h5 className="text-sm font-bold">js</h5>
-                  <FontAwesomeIcon icon={faJs} className="w-4"/>
+                <div className="flex justify-between">
+                  <div className="flex gap-2 p-1 px-4 bg-[hsl(var(--secondary))]">
+                    <FontAwesomeIcon icon={faJs} className="text-yellow-500  w-4"/>
+                    <h5 className="text-sm font-bold">js</h5>
+                  </div>
+                  <div className="cursor-pointer px-1">
+                  <Settings fontSize="small"/>
+                  <ExpandMore fontSize="small"/>
+                  </div>
                 </div>
+                
                 <div className="flex-grow mt-2">
                   body
                 </div>
