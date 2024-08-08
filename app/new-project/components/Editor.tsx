@@ -1,3 +1,5 @@
+"use client"
+
 import {
   ResizableHandle,
   ResizablePanel,
@@ -6,8 +8,40 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHtml5, faCss3Alt, faJs } from "@fortawesome/free-brands-svg-icons";
 import { Settings, ExpandMore } from "@mui/icons-material";
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { vscodeDark } from '@uiw/codemirror-theme-vscode';
+import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
+import { useEffect, useState } from "react";
 
 const Editor = () => {
+  const [htmlCode, setHtmlCode ] = useState("");
+  const [cssPlaceholder ] = useState(`h1 {
+  color: #fff;
+}
+    `);
+  const [cssCode, setCssCode ] = useState("")
+  const [jsCode, setJsCode ] = useState("");
+  const [ouput, setOutput ] = useState("");
+
+
+  useEffect(() => {
+    const handlePreview = () => {
+      setOutput(`
+<html>
+  <head>
+    <style>${cssCode}</style>
+  </head>
+  <body>
+    ${htmlCode}
+    <script>${jsCode}</script>
+  </body>
+</html>
+      `)
+    };
+    handlePreview()
+  }, [htmlCode, cssCode, jsCode])
+
   return (
     <div>
       <div className="border-2 bg-[hsl(var(--background))] w-full h-[80dvh] text-[hsl(var(--foreground))]">
@@ -26,8 +60,15 @@ const Editor = () => {
                   <ExpandMore fontSize="small"/>
                   </div>
                 </div>
-                <div className="flex-grow mt-2">
-                  body
+                <div className="flex-grow mt-2 p-2 border-x border-[hsl(var(--accent))]">
+                  <CodeMirror
+                    theme={tokyoNight}
+                    placeholder="<h1>Welcome to caditor!</h1>"
+                    value={htmlCode} 
+                    height="400px"
+                    extensions={[javascript({ jsx: true })]}
+                    onChange={(value, viewUpdate) => setHtmlCode(value)}
+                  />
                 </div>
               </section>
             </ResizablePanel>
@@ -44,8 +85,15 @@ const Editor = () => {
                     <ExpandMore fontSize="small"/>
                   </div>
                 </div>
-                <div className="flex-grow mt-2">
-                  body
+                <div className="flex-grow mt-2 p-2">
+                  <CodeMirror
+                    theme={tokyoNight}
+                    placeholder={cssPlaceholder}
+                    value={cssCode} 
+                    height="400px"
+                    extensions={[javascript({ jsx: true })]}
+                    onChange={(value, viewUpdate) => setCssCode(value)}
+                  />
                 </div>
               </section>
             </ResizablePanel>
@@ -62,16 +110,28 @@ const Editor = () => {
                   <ExpandMore fontSize="small"/>
                   </div>
                 </div>
-                
-                <div className="flex-grow mt-2">
-                  body
+                <div className="flex-grow mt-2 p-2 border-x border-[hsl(var(--accent))]">
+                  <CodeMirror
+                    theme={tokyoNight}
+                    placeholder="console.log('Caditor!');"
+                    value={jsCode} 
+                    height="400px"
+                    extensions={[javascript({ jsx: true })]}
+                    onChange={(value, viewUpdate) => setJsCode(value)}
+                  />
                 </div>
               </section>
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel>terminal</ResizablePanel>
+        <ResizablePanel className="p-2">
+          <iframe
+          title="code output"
+          srcDoc={ouput}
+          className="w-full h-full"
+          />
+        </ResizablePanel>
       </ResizablePanelGroup>
       </div>
       <div></div>
