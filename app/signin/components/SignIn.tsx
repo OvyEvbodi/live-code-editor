@@ -3,8 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Google, GitHub } from '@mui/icons-material';
 import { signInWithGoogle, signInWithGithub } from "@/lib/auth-utils"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { auth } from "@/config/firebase.config";
 
 const SignIn = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const authStatus = auth.onAuthStateChanged(cred => {
+      if (cred) {
+        router.push("/")      }
+    })
+    return (() => authStatus())
+  }, [router])
+  
   return (
     <div className="">
       <h1>Sign In </h1>

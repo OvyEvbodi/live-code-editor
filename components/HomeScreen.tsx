@@ -21,7 +21,7 @@ const HomeScreen = () => {
         setDoc(doc(db, "caditor-users", cred.uid), cred.providerData[0])
         .then(() => {
           // redux
-          console.log(cred.providerData)
+          // console.log(cred.providerData)
           dispatch(loginUser({
             email: cred.providerData[0].email,
             displayName: cred.providerData[0].displayName,
@@ -34,7 +34,8 @@ const HomeScreen = () => {
       }
     })
     return (() => authStatus())
-  }, [router])
+  }, [router, dispatch])
+
   return (
     <div>
       <Button onClick={handleSignOut}>Sign out</Button>
