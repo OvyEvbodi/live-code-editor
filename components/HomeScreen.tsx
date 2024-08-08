@@ -8,6 +8,7 @@ import { handleSignOut } from "@/lib/auth-utils";
 import { doc, setDoc } from "firebase/firestore";
 import { loginUser } from "@/redux/user.slice";
 import { useDispatch } from "react-redux";
+import UserData from "@/app/projects/components/UserData";
 
 
 const HomeScreen = () => {
@@ -38,6 +39,7 @@ const HomeScreen = () => {
 
   return (
     <div>
+      <UserData />
       <Button onClick={handleSignOut}>Sign out</Button>
     </div>
   )

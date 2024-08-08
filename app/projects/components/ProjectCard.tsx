@@ -3,12 +3,12 @@ import { BookmarkBorder, Bookmark } from "@mui/icons-material";
 
 const ProjectCard = () => {
   return (
-    <div className="w-72 border-4">
-      <div className="bg-slate-700 p-2">
+    <div className="w-72 border-4 bg-[hsl(var(--secondary))]">
+      <div className="bg-zinc-700 p-2">
        <Image src="" width={200} height={160} alt="pic alt" />
       </div>
       <div className="flex gap-4 items-center p-3">
-        <div className="bg-slate-200 w-10 h-10 rounded-md">
+        <div className="bg-zinc-200 w-10 h-10 rounded-md">
           <Image src="" width={40} height={40} alt="author pic alt" />
         </div>
         <div className="w-full">

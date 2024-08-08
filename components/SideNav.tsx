@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import {PersonAdd, KeyboardDoubleArrowLeft, KeyboardDoubleArrowRight, Home, IntegrationInstructions } from "@mui/icons-material";
+import {PersonAdd, KeyboardDoubleArrowLeft, KeyboardDoubleArrowRight, Home, IntegrationInstructions, Add } from "@mui/icons-material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth } from "@/config/firebase.config";
@@ -29,6 +29,7 @@ const SideNav = () => {
         }
       </div>
       <nav className="mt-4 flex flex-col gap-6">
+      <Link href="/new-project" className="flex gap-6"><Add /> <h2>New</h2></Link>
       {isLoggedIn ?
        <Link href="/" className="flex gap-6"><Home /> <h2>Home</h2></Link> :
        <Link href="/signin" className="flex gap-6"><PersonAdd /> <h2>SignIn</h2></Link>

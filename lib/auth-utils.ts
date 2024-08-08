@@ -20,6 +20,7 @@ export const signInWithGithub = async () => {
     const credential = GithubAuthProvider.credentialFromResult(result);
     const token = credential!.accessToken;
     const user = result.user;
+    console.log(user)
     // IdP data available using getAdditionalUserInfo(result)
   }).catch((error) => {
     const errorCode = error.code;
@@ -28,5 +29,7 @@ export const signInWithGithub = async () => {
     const email = error.customData.email;
     // The AuthCredential type that was used.
     const credential = GithubAuthProvider.credentialFromError(error);
+    console.log(error)
+
   });
 };
