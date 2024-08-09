@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/resizable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHtml5, faCss3Alt, faJs } from "@fortawesome/free-brands-svg-icons";
-import { Settings, ExpandMore, Edit, Check } from "@mui/icons-material";
+import { Settings, ExpandMore, Edit, Check, Clear } from "@mui/icons-material";
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
@@ -18,30 +18,60 @@ import { Button } from "@/components/ui/button";
 import UserData from "@/app/projects/components/UserData";
 import { db } from "@/config/firebase.config";
 import { doc, getDoc, updateDoc, arrayUnion, collection, query, where, increment, DocumentSnapshot, DocumentData  } from "firebase/firestore"; 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearWorkspace } from "@/redux/user.slice";
 import { RootState } from "@/redux/store";
 import { useToast } from "@/components/ui/use-toast";
 import { ProjectCardProps }  from "@/app/projects/components/ProjectCard";
 
 
+export interface EditProjectProps {
+  html: string;
+  css: string;
+  js: string;
+  PrevOuput: string;
+  prevTitle: string;
+}
+
 
 const Editor = () => {
-  const [htmlCode, setHtmlCode ] = useState("");
   const [cssPlaceholder ] = useState(`h1 {
   color: #fff;
 }
     `);
-  const [ cssCode, setCssCode ] = useState("")
-  const [ jsCode, setJsCode ] = useState("");
-  const [ ouput, setOutput ] = useState("");
-  const [ title, setTitle ] = useState("New project");
+  const html = useSelector((state: RootState) => state.user.DisplayProject.htmlCode);
+  const css = useSelector((state: RootState) => state.user.DisplayProject.cssCode);
+  const js = useSelector((state: RootState) => state.user.DisplayProject.jsCode);
+  const PrevOutput = useSelector((state: RootState) => state.user.DisplayProject.output);
+  const prevTitle = useSelector((state: RootState) => state.user.DisplayProject.title);
+
+  const [htmlCode, setHtmlCode ] = useState(html);
+  const [ cssCode, setCssCode ] = useState(css)
+  const [ jsCode, setJsCode ] = useState(js);
+  const [ ouput, setOutput ] = useState(PrevOutput);
+  const [ title, setTitle ] = useState(prevTitle);
   const [ editTitle, setEditTitle ] = useState(false);
   const [ isSaving, setIsSaving ] = useState(false);
   const id = useSelector((state: RootState) => state.user.id);
   const author = useSelector((state: RootState) => state.user.displayName);
   const picture = useSelector((state: RootState) => state.user.profilePicUrl);
+  
   const { toast } = useToast();
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const handleClear = () => {
+    dispatch(clearWorkspace())
+    console.log(html)
+
+    console.log(htmlCode)
+    setHtmlCode(html)
+    setCssCode(css)
+    setJsCode(js)
+    setOutput(PrevOutput)
+    setTitle(prevTitle)
+    console.log(htmlCode)
+  };
 
   const handleSaveProject = async () => {
     setIsSaving(true);
@@ -102,12 +132,13 @@ const Editor = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        description: "Error saving project.",
+        description: "Error saving project. Try signing in",
       })
       console.log(error)
     }
     setIsSaving(false)
   };
+
 
   useEffect(() => {
     const handlePreview = () => {
@@ -129,7 +160,7 @@ const Editor = () => {
   return (
     <div>
       <div className="flex justify-between items-center gap-2 mb-3">
-        <h4>
+        <h4 className="flex justify-between items-center gap-4">
           { editTitle? 
            <div className="flex justify-between items-center gap-4 hover:opacity-75 transition-all duration-200 ease-in-out">
             <input onChange={(e) => setTitle(e.target.value)} type="text" placeholder="edit title..." className="bg-transparent outline-none hover:outline-[hsl(var(--accent))] px-2"/>
@@ -140,6 +171,7 @@ const Editor = () => {
             <span onClick={() => setEditTitle(!editTitle)} className="flex justify-between items-center"><Edit fontSize="small" className="cursor-pointer" /></span>
            </div>
           }
+          <span onClick={handleClear} className="cursor-pointer px-3 bg-[hsl(var(--destructive))] hover:opacity-75 transition-all duration-300 ease-in-out">clear space <Clear /></span>
         </h4>
         <div className="flex justify-between items-center gap-4">
           <Button disabled={isSaving} onClick={handleSaveProject} className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>{isSaving ? "Saving..." : "Save"}</Button>

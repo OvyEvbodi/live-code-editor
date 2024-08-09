@@ -3,6 +3,9 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import { BookmarkBorder, Bookmark } from "@mui/icons-material";
+import { EditProject } from "@/redux/user.slice";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 export interface ProjectCardProps {
   title: string;
@@ -18,8 +21,16 @@ export interface ProjectCardProps {
 }
 
 const ProjectCard = (props: ProjectCardProps) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleEditProject = (projectData: ProjectCardProps ) => {
+    dispatch(EditProject(projectData))
+    router.push("/new-project")
+  };
+
   return (
-    <div className="w-72 border-4 bg-[hsl(var(--secondary))]">
+    <div onClick={() => handleEditProject(props)} className="w-72 border-4 bg-[hsl(var(--secondary))] cursor-pointer">
       <div className="bg-zinc-700 p-2">
         <iframe
         title="project preview"

@@ -19,7 +19,15 @@ const userSlice = createSlice({
     displayName: "",
     profilePicUrl: "",
     isLoggedIn: false,
-    projects: []
+    projects: [],
+    DisplayProject: {
+      htmlCode: "",
+      cssCode: "",
+      jsCode: "",
+      output: "",
+      title: "New project",
+      projectId: -1
+    }
   },
   reducers: {
     loginUser: ( state, action ) => {
@@ -36,8 +44,27 @@ const userSlice = createSlice({
       state.profilePicUrl = "";
       state.id = "";
     },
+    EditProject: ( state, action ) => {
+      state.DisplayProject.htmlCode = action.payload.htmlCode;
+      state.DisplayProject.cssCode = action.payload.cssCode;
+      state.DisplayProject.jsCode = action.payload.jsCode;
+      state.DisplayProject.output = action.payload.output;
+      state.DisplayProject.title = action.payload.title;
+      state.DisplayProject.projectId = action.payload.projectId;
+    },
+    clearWorkspace: ( state ) => {
+      console.log(state.DisplayProject.htmlCode)
+
+      state.DisplayProject.htmlCode = "";
+      state.DisplayProject.cssCode = "";
+      state.DisplayProject.jsCode = "";
+      state.DisplayProject.output = "";
+      state.DisplayProject.title = "New project";
+      state.DisplayProject.projectId = -1;
+      console.log(state.DisplayProject.htmlCode)
+    }
   }
 });
 
 export default userSlice.reducer;
-export const { loginUser, signoutUser } = userSlice.actions;
+export const { loginUser, signoutUser, EditProject, clearWorkspace } = userSlice.actions;
