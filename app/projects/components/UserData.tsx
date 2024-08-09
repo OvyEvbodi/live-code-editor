@@ -18,7 +18,7 @@ const UserData = () => {
           <AvatarFallback>{displayName ? displayName.split("")[0] : "N/A"}</AvatarFallback>
         </Avatar>
       </div>
-      <div>{displayName}</div>
+      <div>{displayName ? displayName : email ? email.split("@")[0] : "anonymous"}</div>
     </div>
   )
 }

@@ -13,8 +13,13 @@ import { javascript } from '@codemirror/lang-javascript';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import UserData from "@/app/projects/components/UserData";
+import { db } from "@/config/firebase.config";
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Editor = () => {
   const [htmlCode, setHtmlCode ] = useState("");
@@ -22,10 +27,46 @@ const Editor = () => {
   color: #fff;
 }
     `);
-  const [cssCode, setCssCode ] = useState("")
-  const [jsCode, setJsCode ] = useState("");
-  const [ouput, setOutput ] = useState("");
+  const [ cssCode, setCssCode ] = useState("")
+  const [ jsCode, setJsCode ] = useState("");
+  const [ ouput, setOutput ] = useState("");
+  const [ title, setTitle ] = useState("new project");
+  const [ editTitle, setEditTitle ] = useState(false);
+  const id = useSelector((state: RootState) => state.user.id);
+  const author = useSelector((state: RootState) => state.user.displayName);
+  const picture = useSelector((state: RootState) => state.user.profilePicUrl);
 
+  const router = useRouter();
+
+  const handleSaveProject = async () => {
+    const newProject = {
+      title,
+      htmlCode,
+      cssCode,
+      jsCode,
+      ouput,
+      userId: id,
+      author,
+      picture
+    };
+    try {
+      const docRef = doc(db, "caditor-users", id);
+      const document = await getDoc(docRef);
+      if (document.exists()) {
+        console.log(document.data())
+        updateDoc(docRef, {
+          projects: arrayUnion({newProject})
+        })
+      } else {
+        console.log("doc not found... create user!")
+        // redirect to sign in, but hold the data temporaily
+        router.push("/signin")
+      }
+      //update doc
+    } catch (error) {
+      console.log(error)
+    }
+  };
 
   useEffect(() => {
     const handlePreview = () => {
@@ -49,7 +90,7 @@ const Editor = () => {
       <div className="flex justify-between items-center gap-2 mb-3">
         <h4 className="flex justify-between gap-4 cursor-pointer hover:opacity-75 transition-all duration-200 ease-in-out">New Project <Edit fontSize="small" /></h4>
         <div className="flex justify-between items-center gap-4">
-          <Button className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>Save</Button>
+          <Button onClick={handleSaveProject} className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>Save</Button>
           <UserData />
         </div>
       </div>

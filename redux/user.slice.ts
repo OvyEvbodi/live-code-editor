@@ -19,7 +19,7 @@ const userSlice = createSlice({
     displayName: "",
     profilePicUrl: "",
     isLoggedIn: false,
-    projects: {}
+    projects: []
   },
   reducers: {
     loginUser: ( state, action ) => {
