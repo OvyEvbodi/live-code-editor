@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/resizable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHtml5, faCss3Alt, faJs } from "@fortawesome/free-brands-svg-icons";
-import { Settings, ExpandMore, Edit } from "@mui/icons-material";
+import { Settings, ExpandMore, Edit, Check } from "@mui/icons-material";
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
@@ -20,6 +20,8 @@ import { db } from "@/config/firebase.config";
 import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useToast } from "@/components/ui/use-toast"
+
 
 const Editor = () => {
   const [htmlCode, setHtmlCode ] = useState("");
@@ -30,12 +32,12 @@ const Editor = () => {
   const [ cssCode, setCssCode ] = useState("")
   const [ jsCode, setJsCode ] = useState("");
   const [ ouput, setOutput ] = useState("");
-  const [ title, setTitle ] = useState("new project");
+  const [ title, setTitle ] = useState("New project");
   const [ editTitle, setEditTitle ] = useState(false);
   const id = useSelector((state: RootState) => state.user.id);
   const author = useSelector((state: RootState) => state.user.displayName);
   const picture = useSelector((state: RootState) => state.user.profilePicUrl);
-
+  const { toast } = useToast();
   const router = useRouter();
 
   const handleSaveProject = async () => {
@@ -53,9 +55,12 @@ const Editor = () => {
       const docRef = doc(db, "caditor-users", id);
       const document = await getDoc(docRef);
       if (document.exists()) {
-        console.log(document.data())
+        // console.log(document.data())
         updateDoc(docRef, {
-          projects: arrayUnion({newProject})
+          projects: arrayUnion(newProject)
+        })
+        toast({
+          description: "Project saved.",
         })
       } else {
         console.log("doc not found... create user!")
@@ -88,7 +93,18 @@ const Editor = () => {
   return (
     <div>
       <div className="flex justify-between items-center gap-2 mb-3">
-        <h4 className="flex justify-between gap-4 cursor-pointer hover:opacity-75 transition-all duration-200 ease-in-out">New Project <Edit fontSize="small" /></h4>
+        <h4>
+          { editTitle? 
+           <div className="flex justify-between items-center gap-4 hover:opacity-75 transition-all duration-200 ease-in-out">
+            <input onChange={(e) => setTitle(e.target.value)} type="text" placeholder="edit title..." className="bg-transparent outline-none hover:outline-[hsl(var(--accent))] px-2"/>
+            <span onClick={() => setEditTitle(!editTitle)} className="flex justify-between items-center"><Check fontSize="small" className="cursor-pointer" /></span>
+           </div> : 
+           <div className="flex justify-between items-center gap-4 hover:opacity-75 transition-all duration-200 ease-in-out">
+            <span>{title}</span>
+            <span onClick={() => setEditTitle(!editTitle)} className="flex justify-between items-center"><Edit fontSize="small" className="cursor-pointer" /></span>
+           </div>
+          }
+        </h4>
         <div className="flex justify-between items-center gap-4">
           <Button onClick={handleSaveProject} className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>Save</Button>
           <UserData />

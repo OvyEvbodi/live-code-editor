@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { store, persistor } from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import SideNav from "@/components/SideNav";
+import { Toaster } from "@/components/ui/toaster"
 
 const roboto = Roboto({ weight: ["700", "300", "400", "500", "900"], subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <body className={roboto.className}>
             <SideNav />
             {children}
+            <Toaster />
           </body>
         </PersistGate>
       </Provider>

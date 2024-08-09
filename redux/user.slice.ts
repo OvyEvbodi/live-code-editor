@@ -30,13 +30,11 @@ const userSlice = createSlice({
       state.id = action.payload.id;
     },
     signoutUser: ( state ) => {
-      console.log(state.displayName)
       state.isLoggedIn = false;
       state.email = "";
       state.displayName = "";
       state.profilePicUrl = "";
       state.id = "";
-      console.log(state.displayName)
     },
   }
 });

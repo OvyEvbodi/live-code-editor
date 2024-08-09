@@ -2,6 +2,7 @@ import UserData from "@/app/projects/components/UserData";
 import SearchBar from "@/app/projects/components/SearchBar";
 import ProjectCard from "@/app/projects/components/ProjectCard";
 import Logo from "@/components/Logo";
+import AllProjects from "@/app/projects/components/AllProjects";
 const ProjectsPage = () => {
   return (
     <main className="">
@@ -11,13 +12,7 @@ const ProjectsPage = () => {
       <UserData />
       </div>
       <SearchBar />
-      <div className="flex gap-8 flex-wrap py-8 justify-center">
-      {
-        [...Array(9)].map((_, index) => (
-          <ProjectCard key={index} />
-        ))
-      }
-      </div>
+      <AllProjects />
     </main>
   )
 }
