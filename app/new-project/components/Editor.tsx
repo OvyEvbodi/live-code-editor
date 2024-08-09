@@ -89,10 +89,10 @@ const Editor = () => {
           updateDoc(docRef, {
             totalProjects: increment(1)
           })
+          toast({
+            description: "New project saved.",
+          })
         }
-        toast({
-          description: "New project saved.",
-        })
       } else {
         console.log("doc not found... create user!")
         // redirect to sign in, but hold the data temporaily
