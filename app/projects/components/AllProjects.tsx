@@ -6,6 +6,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import ProjectCard, { ProjectCardProps }  from "@/app/projects/components/ProjectCard";
+import TriangleSpinner from "@/components/TriangleSpinner";
 
 const AllProjects = () => {
   const id = useSelector((state: RootState) => state.user.id);
@@ -36,7 +37,9 @@ const AllProjects = () => {
         projectList.map((item, index) => (
           <ProjectCard key={index} {...item} />
         )) :
-        <div>No projects yet... Design coming soon, lol.</div>
+        // projectList && projectList.length === 0 ?
+        // <div>No projects yet... Design coming soon, lol.</div> :
+        <TriangleSpinner />
       }
     </div>
   )

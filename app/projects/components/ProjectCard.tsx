@@ -2,7 +2,6 @@ import Image from "next/image";
 import { BookmarkBorder, Bookmark } from "@mui/icons-material";
 
 export interface ProjectCardProps {
-  profilePictureUrl: string;
   title: string;
   htmlCode: string;
   cssCode: string;
@@ -17,11 +16,15 @@ const ProjectCard = (props: ProjectCardProps) => {
   return (
     <div className="w-72 border-4 bg-[hsl(var(--secondary))]">
       <div className="bg-zinc-700 p-2">
-       <Image src="" width={200} height={160} alt="project preview" />
+        <iframe
+        title="project preview"
+        srcDoc={props.ouput}
+        className="w-full h-full"
+        />       
       </div>
       <div className="flex gap-4 items-center p-3">
-        <div className="bg-zinc-200 w-10 h-10 rounded-md">
-          <Image src={props.profilePictureUrl} width={40} height={40} alt="author's profile picture" />
+        <div className="bg-zinc-200 w-12 h-10 rounded-md">
+          {props.picture && <Image src={props.picture} width={48} height={48} alt="author's profile picture" />}
         </div>
         <div className="w-full">
           <h4 className="text-sm font-medium">{props.title}</h4>
