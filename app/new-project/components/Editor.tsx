@@ -17,10 +17,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import UserData from "@/app/projects/components/UserData";
 import { db } from "@/config/firebase.config";
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
+import { doc, getDoc, updateDoc, arrayUnion, collection, query, where, increment, DocumentSnapshot, DocumentData  } from "firebase/firestore"; 
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
+import { ProjectCardProps }  from "@/app/projects/components/ProjectCard";
+
 
 
 const Editor = () => {
@@ -34,6 +36,7 @@ const Editor = () => {
   const [ ouput, setOutput ] = useState("");
   const [ title, setTitle ] = useState("New project");
   const [ editTitle, setEditTitle ] = useState(false);
+  const [ isSaving, setIsSaving ] = useState(false);
   const id = useSelector((state: RootState) => state.user.id);
   const author = useSelector((state: RootState) => state.user.displayName);
   const picture = useSelector((state: RootState) => state.user.profilePicUrl);
@@ -41,26 +44,54 @@ const Editor = () => {
   const router = useRouter();
 
   const handleSaveProject = async () => {
-    const newProject = {
-      title,
-      htmlCode,
-      cssCode,
-      jsCode,
-      ouput,
-      userId: id,
-      author,
-      picture
-    };
+    setIsSaving(true);
     try {
       const docRef = doc(db, "caditor-users", id);
+      const colRef = collection(db, "caditor-users");
       const document = await getDoc(docRef);
       if (document.exists()) {
-        // console.log(document.data())
-        updateDoc(docRef, {
-          projects: arrayUnion(newProject)
-        })
+        // check length of projs 
+        const oldProject = document.data().projects ? document.data().projects.filter((item: ProjectCardProps, index: number) => {
+          console.log(title)
+          console.log(item.title)
+          console.log(item.title === title)
+          return item.title === title;
+        }) : null;
+
+        if (oldProject && oldProject.length > 0) {
+          //update existing project
+          // use proj id as array index
+          // editor should accept proj props, set proj array idx projid to proj in editor
+          console.log(oldProject)
+          toast({
+            description: "Changes updated.",
+          })
+        } else {
+          // save new proj
+          const projectId = Number(document.data().totalProjects);
+          console.log(projectId)
+
+          const newProject: ProjectCardProps = {
+            title,
+            htmlCode,
+            cssCode,
+            jsCode,
+            ouput,
+            userId: id,
+            author,
+            picture,
+            saved: false,
+            projectId
+          };
+          updateDoc(docRef, {
+            projects: arrayUnion(newProject)
+          })
+          updateDoc(docRef, {
+            totalProjects: increment(1)
+          })
+        }
         toast({
-          description: "Project saved.",
+          description: "New project saved.",
         })
       } else {
         console.log("doc not found... create user!")
@@ -69,8 +100,13 @@ const Editor = () => {
       }
       //update doc
     } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "Error saving project.",
+      })
       console.log(error)
     }
+    setIsSaving(false)
   };
 
   useEffect(() => {
@@ -106,7 +142,7 @@ const Editor = () => {
           }
         </h4>
         <div className="flex justify-between items-center gap-4">
-          <Button onClick={handleSaveProject} className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>Save</Button>
+          <Button disabled={isSaving} onClick={handleSaveProject} className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>{isSaving ? "Saving..." : "Save"}</Button>
           <UserData />
         </div>
       </div>

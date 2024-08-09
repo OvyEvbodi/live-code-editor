@@ -17,7 +17,6 @@ const HomeScreen = () => {
 
   const handleSignOut = () => {
     dispatch(signoutUser())
-    console.log("out")
     authSignOut()
   };
 
@@ -30,18 +29,15 @@ const HomeScreen = () => {
             getDoc(docRef).then(document => {
               if (document.exists()) {
                 // user exists, get user to load redux
-                // console.log(document)
                 dispatch(loginUser({
                   email: document.data().email,
                   displayName: document.data().displayName,
                   profilePicUrl: document.data().photoURL,
                   id: cred.uid
                 }))
-                console.log(document.data().uid)
-                console.log(document.data().displayName)
-
+                // console.log(document.data().displayName)
               } else {
-                setDoc(doc(db, "caditor-users", cred.uid), {...cred.providerData[0], projects: []})
+                setDoc(doc(db, "caditor-users", cred.uid), {...cred.providerData[0], projects: [], totalProjects: 0})
                 .then(() => {
                   dispatch(loginUser({
                     email: cred.providerData[0].email,
@@ -69,6 +65,10 @@ const HomeScreen = () => {
   return (
     <div>
       <UserData />
+      <div>
+        <h2>This is your home</h2>
+        <p>Your data and settings will appear here</p>
+      </div>
       <Button onClick={handleSignOut}>Sign out</Button>
     </div>
   )

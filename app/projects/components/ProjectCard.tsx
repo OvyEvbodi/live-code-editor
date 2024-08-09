@@ -1,4 +1,7 @@
+"use client"
+
 import Image from "next/image";
+import { useEffect } from "react";
 import { BookmarkBorder, Bookmark } from "@mui/icons-material";
 
 export interface ProjectCardProps {
@@ -10,6 +13,8 @@ export interface ProjectCardProps {
   userId: string;
   author: string;
   picture: string;
+  saved: boolean;
+  projectId: number;
 }
 
 const ProjectCard = (props: ProjectCardProps) => {
@@ -23,15 +28,19 @@ const ProjectCard = (props: ProjectCardProps) => {
         />       
       </div>
       <div className="flex gap-4 items-center p-3">
-        <div className="bg-zinc-200 w-12 h-10 rounded-md">
+        <div className="bg-zinc-200 w-14 h-10 rounded-md overflow-hidden flex justify-center items-center">
           {props.picture && <Image src={props.picture} width={48} height={48} alt="author's profile picture" />}
         </div>
         <div className="w-full">
           <h4 className="text-sm font-medium">{props.title}</h4>
           <div className="flex justify-between w-full">
             <span className="text-sm font-light capitalize">{props.author}</span>
-            {/* check if saved, then render conditional icon */}
-            <BookmarkBorder /> 
+            {
+              props.saved ? 
+              <Bookmark /> :
+              <BookmarkBorder /> 
+            }
+            
           </div>
         </div>
       </div>
