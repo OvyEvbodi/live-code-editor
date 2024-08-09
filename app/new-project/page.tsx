@@ -5,9 +5,7 @@ import { Button } from '@/components/ui/button';
 const NewProjectPage = () => {
   return (
     <main>
-      <div className="flex justify-between mb-1">
-        <Logo />
-      </div>
+      <Logo />
       <Editor />
     </main>
   )

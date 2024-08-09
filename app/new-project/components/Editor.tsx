@@ -14,6 +14,7 @@ import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import UserData from "@/app/projects/components/UserData";
 
 const Editor = () => {
   const [htmlCode, setHtmlCode ] = useState("");
@@ -45,9 +46,12 @@ const Editor = () => {
 
   return (
     <div>
-      <div className="flex justify-between mb-3">
+      <div className="flex justify-between items-center gap-2 mb-3">
         <h4 className="flex justify-between gap-4 cursor-pointer hover:opacity-75 transition-all duration-200 ease-in-out">New Project <Edit fontSize="small" /></h4>
-        <Button className='md:px-20 bg-[hsl(var(--accent))]'>Save</Button>
+        <div className="flex justify-between items-center gap-4">
+          <Button className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>Save</Button>
+          <UserData />
+        </div>
       </div>
       <div className="border-2 bg-[hsl(var(--background))] w-full h-[80dvh] text-[hsl(var(--foreground))]">
         <ResizablePanelGroup direction="vertical">
