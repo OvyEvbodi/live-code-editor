@@ -35,7 +35,6 @@ const HomeScreen = () => {
                   profilePicUrl: document.data().photoURL,
                   id: cred.uid
                 }))
-                console.log("here")
               } else {
                 setDoc(doc(db, "caditor-users", cred.uid), {...cred.providerData[0], projects: [], totalProjects: 0})
                 .then(() => {

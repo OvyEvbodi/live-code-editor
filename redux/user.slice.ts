@@ -53,15 +53,12 @@ const userSlice = createSlice({
       state.DisplayProject.projectId = action.payload.projectId;
     },
     clearWorkspace: ( state ) => {
-      console.log(state.DisplayProject.htmlCode)
-
       state.DisplayProject.htmlCode = "";
       state.DisplayProject.cssCode = "";
       state.DisplayProject.jsCode = "";
       state.DisplayProject.output = "";
       state.DisplayProject.title = "New project";
       state.DisplayProject.projectId = -1;
-      console.log(state.DisplayProject.htmlCode)
     }
   }
 });

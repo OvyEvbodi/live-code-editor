@@ -44,11 +44,13 @@ const Editor = () => {
   const js = useSelector((state: RootState) => state.user.DisplayProject.jsCode);
   const PrevOutput = useSelector((state: RootState) => state.user.DisplayProject.output);
   const prevTitle = useSelector((state: RootState) => state.user.DisplayProject.title);
+  const projectId = useSelector((state: RootState) => state.user.DisplayProject.projectId);
+
 
   const [htmlCode, setHtmlCode ] = useState(html);
   const [ cssCode, setCssCode ] = useState(css)
   const [ jsCode, setJsCode ] = useState(js);
-  const [ ouput, setOutput ] = useState(PrevOutput);
+  const [ output, setOutput ] = useState(PrevOutput);
   const [ title, setTitle ] = useState(prevTitle);
   const [ editTitle, setEditTitle ] = useState(false);
   const [ isSaving, setIsSaving ] = useState(false);
@@ -77,21 +79,33 @@ const Editor = () => {
     setIsSaving(true);
     try {
       const docRef = doc(db, "caditor-users", id);
-      const colRef = collection(db, "caditor-users");
       const document = await getDoc(docRef);
       if (document.exists()) {
         // check length of projs 
-        const oldProject = document.data().projects ? document.data().projects.filter((item: ProjectCardProps, index: number) => {
-          console.log(title)
-          console.log(item.title)
-          console.log(item.title === title)
-          return item.title === title;
+        const oldProject = document.data().projects ? document.data().projects.filter((item: ProjectCardProps) => {
+          console.log(projectId)
+          console.log(item.projectId)
+          console.log(item.projectId === projectId)
+          return item.projectId === projectId;
         }) : null;
 
         if (oldProject && oldProject.length > 0) {
           //update existing project
-          // use proj id as array index
-          // editor should accept proj props, set proj array idx projid to proj in editor
+          const projData = document.data().projects.map((item: ProjectCardProps, index: number) => {
+            if (index === projectId) {
+              console.log(index, projectId)
+              item.htmlCode = htmlCode,
+              item.cssCode = cssCode,
+              item.jsCode = jsCode,
+              item.output = output,
+              item.title = title
+            }
+            return item
+          });
+          console.log(projData)
+          updateDoc(docRef, {
+            projects: projData
+          })
           console.log(oldProject)
           toast({
             description: "Changes updated.",
@@ -106,7 +120,7 @@ const Editor = () => {
             htmlCode,
             cssCode,
             jsCode,
-            ouput,
+            output,
             userId: id,
             author,
             picture,
@@ -163,7 +177,7 @@ const Editor = () => {
         <h4 className="flex justify-between items-center gap-4">
           { editTitle? 
            <div className="flex justify-between items-center gap-4 hover:opacity-75 transition-all duration-200 ease-in-out">
-            <input onChange={(e) => setTitle(e.target.value)} type="text" placeholder="edit title..." className="bg-transparent outline-none hover:outline-[hsl(var(--accent))] px-2"/>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="edit title..." className="bg-transparent outline-none hover:outline-[hsl(var(--accent))] px-2"/>
             <span onClick={() => setEditTitle(!editTitle)} className="flex justify-between items-center"><Check fontSize="small" className="cursor-pointer" /></span>
            </div> : 
            <div className="flex justify-between items-center gap-4 hover:opacity-75 transition-all duration-200 ease-in-out">
@@ -262,7 +276,7 @@ const Editor = () => {
           <ResizablePanel className="p-2">
             <iframe
             title="code output"
-            srcDoc={ouput}
+            srcDoc={output}
             className="w-full h-full"
             />
           </ResizablePanel>
