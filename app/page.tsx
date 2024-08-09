@@ -1,4 +1,5 @@
 import HomeScreen from "@/components/HomeScreen";
+import Logo from "@/components/Logo";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="">
-      <h1>Caditor</h1>
+      <Logo />
       <HomeScreen />
     </main>
   );
