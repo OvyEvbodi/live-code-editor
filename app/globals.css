@@ -105,3 +105,6 @@ main {
 main h1 {
   @apply font-bold text-2xl tracking-tight capitalize mb-4;
 }
+.smooth {
+  transition: all 300ms ease;
+}

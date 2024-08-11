@@ -17,6 +17,7 @@ const userSlice = createSlice({
     id: "",
     email: "",
     displayName: "",
+    searchString: "",
     profilePicUrl: "",
     isLoggedIn: false,
     projects: [],
@@ -59,9 +60,12 @@ const userSlice = createSlice({
       state.DisplayProject.output = "";
       state.DisplayProject.title = "New project";
       state.DisplayProject.projectId = -1;
+    },
+    setSearchString: ( state, action ) => {
+      state.searchString = action.payload;
     }
   }
 });
 
 export default userSlice.reducer;
-export const { loginUser, signoutUser, EditProject, clearWorkspace } = userSlice.actions;
+export const { loginUser, signoutUser, EditProject, clearWorkspace, setSearchString } = userSlice.actions;

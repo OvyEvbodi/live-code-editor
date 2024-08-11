@@ -11,16 +11,18 @@ import TriangleSpinner from "@/components/TriangleSpinner";
 const AllProjects = () => {
   const id = useSelector((state: RootState) => state.user.id);
   const [ projectList, setProjectList ] = useState<ProjectCardProps[]>([]);
+  const searchString = useSelector((state: RootState) => state.user.searchString);
+  const searchMode = searchString != "";
+
+  const [ filteredProjects, setFilteredProjects ] = useState<ProjectCardProps[] | []>([]);
 
   useEffect(() => {
     const handleGetProjects = async () => {
       try {
-        console.log(id)
         const docRef = doc(db, "caditor-users", id);
         const document = await getDoc(docRef);
         if (document.exists()) {
           document.data().projects && setProjectList(document.data().projects)
-          console.log(document.data())
         } else {
           console.log("doc not found... create user!")
         }
@@ -31,15 +33,31 @@ const AllProjects = () => {
     handleGetProjects();
   }, [id])
 
+  useEffect(() => {
+    setFilteredProjects(projectList.filter((project) => {
+      return project.title.toLowerCase().includes(searchString.toLowerCase());
+    }))
+  }, [projectList, searchString])
+
   return (
     <div className="flex gap-8 flex-wrap py-8 justify-center">
-      { projectList && projectList.length > 0 ?
-        projectList.map((item, index) => (
-          <ProjectCard key={index} {...item} />
-        )) :
-        // projectList && projectList.length === 0 ?
-        // <div>No projects yet... Design coming soon, lol.</div> :
-        <TriangleSpinner />
+      {
+        !searchMode ? 
+        projectList && projectList.length > 0 ? 
+          projectList.map((item, index) => (
+            <ProjectCard key={index} {...item} />
+          ))
+        : <div>Your projects will appear here.
+            <TriangleSpinner />
+          </div>
+        :
+        filteredProjects && filteredProjects.length > 0 ? 
+          filteredProjects.map((item, index) => (
+            <ProjectCard key={index} {...item} />
+          )) 
+        : <div>
+            Eeeerm, we&apos;re pretty sure you don&apos;t have a project with this title... Try another search.
+          </div>
       }
     </div>
   )
