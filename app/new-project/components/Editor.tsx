@@ -109,10 +109,14 @@ const Editor = () => {
         }) : null;
         if (oldProject && oldProject.length > 0) {
           //update existing project
-          const projData = document.data().projects.filter((item: ProjectCardProps, index: number) => {
+          const preProjData = document.data().projects.filter((item: ProjectCardProps, index: number) => {
             console.log(index !== projectId)
             return index !== projectId
           });
+          const projData = preProjData.map((item: ProjectCardProps, index: number) => {
+            item.projectId = index;
+            return item
+          })
           console.log(projData)
           updateDoc(docRef, {
             projects: projData
@@ -128,7 +132,12 @@ const Editor = () => {
       }
     } catch (error) {
       console.log(error)
+      toast({
+        variant: "destructive",
+        description: "Error deleting project. Check your connection, and try again",
+      })
     }
+    setShowDelete(!showDelete)
   };
 
   const handleSaveProject = async () => {
@@ -139,9 +148,6 @@ const Editor = () => {
       if (document.exists()) {
         // check length of projs 
         const oldProject = document.data().projects ? document.data().projects.filter((item: ProjectCardProps) => {
-          console.log(projectId)
-          console.log(item.projectId)
-          console.log(item.projectId === projectId)
           return item.projectId === projectId;
         }) : null;
 
@@ -149,7 +155,6 @@ const Editor = () => {
           //update existing project
           const projData = document.data().projects.map((item: ProjectCardProps, index: number) => {
             if (index === projectId) {
-              console.log(index, projectId)
               item.htmlCode = htmlCode,
               item.cssCode = cssCode,
               item.jsCode = jsCode,
@@ -191,7 +196,11 @@ const Editor = () => {
           })
         }
       } else {
-        console.log("doc not found... create user!")
+        toast({
+          variant: "destructive",
+          description: "Sign in",
+        })
+        console.log("Doc not found... create user!")
         // redirect to sign in, but hold the data temporaily
         router.push("/signin")
       }
@@ -199,7 +208,7 @@ const Editor = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        description: "Error saving project. Try signing in",
+        description: "Sign in, then return here to save this project",
       })
       console.log(error)
     }
@@ -210,6 +219,7 @@ const Editor = () => {
     setHtmlCode(html)
     setCssCode(css)
     setJsCode(js)
+    setTitle(prevTitle)
     const handlePreview = () => {
       setOutput(`
 <html>
@@ -224,7 +234,7 @@ const Editor = () => {
       `)
     };
     handlePreview()
-  }, [html, css, js, htmlCode, cssCode, jsCode])
+  }, [html, css, js, htmlCode, cssCode, jsCode, prevTitle])
 
   return (
     <div>
