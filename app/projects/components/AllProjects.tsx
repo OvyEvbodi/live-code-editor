@@ -25,7 +25,7 @@ const AllProjects = () => {
           document.data().projects && setProjectList(document.data().projects)
         } else {
           console.log("doc not found... create user!")
-        }
+        } 
       } catch (error) {
         console.log(error)
       }

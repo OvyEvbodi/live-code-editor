@@ -73,6 +73,7 @@ const Editor = () => {
   const [ title, setTitle ] = useState(prevTitle);
   const [ editTitle, setEditTitle ] = useState(false);
   const [ isSaving, setIsSaving ] = useState(false);
+  const [ showDelete, setShowDelete ] = useState(false);
   const id = useSelector((state: RootState) => state.user.id);
   const author = useSelector((state: RootState) => state.user.displayName);
   const picture = useSelector((state: RootState) => state.user.profilePicUrl);
@@ -88,6 +89,46 @@ const Editor = () => {
     setJsCode(js)
     setOutput(PrevOutput)
     setTitle(prevTitle)
+  };
+
+  const handleShowDelete = () => {
+    setShowDelete(!showDelete)
+  };
+
+  const handleDelete = async () => {
+    try {
+      const docRef = doc(db, "caditor-users", id);
+      const document = await getDoc(docRef);
+      if (document.exists()) {
+        // check length of projs 
+        const oldProject = document.data().projects ? document.data().projects.filter((item: ProjectCardProps) => {
+          console.log(projectId)
+          console.log(item.projectId)
+          console.log(item.projectId === projectId)
+          return item.projectId === projectId;
+        }) : null;
+        if (oldProject && oldProject.length > 0) {
+          //update existing project
+          const projData = document.data().projects.filter((item: ProjectCardProps, index: number) => {
+            console.log(index !== projectId)
+            return index !== projectId
+          });
+          console.log(projData)
+          updateDoc(docRef, {
+            projects: projData
+          })
+          updateDoc(docRef, {
+            totalProjects: increment(-1)
+          })
+          handleClear()
+          toast({
+            description: "Project deleted!",
+          })
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const handleSaveProject = async () => {
@@ -117,18 +158,15 @@ const Editor = () => {
             }
             return item
           });
-          console.log(projData)
           updateDoc(docRef, {
             projects: projData
           })
-          console.log(oldProject)
           toast({
             description: "Changes updated.",
           })
         } else {
           // save new proj
           const projectId = Number(document.data().totalProjects);
-          console.log(projectId)
 
           const newProject: ProjectCardProps = {
             title,
@@ -202,7 +240,13 @@ const Editor = () => {
             <span onClick={() => setEditTitle(!editTitle)} className="flex justify-between items-center"><Edit fontSize="small" className="cursor-pointer" /></span>
            </div>
           }
-          <span onClick={handleClear} className="cursor-pointer px-3 bg-[hsl(var(--destructive))] hover:opacity-75 transition-all duration-300 ease-in-out">clear space <Clear /></span>
+          <span onClick={handleClear} className="cursor-pointer px-3 bg-[hsl(var(--destructive))] hover:opacity-75 transition-all duration-300 ease-in-out text-sm">clear space <Clear /></span>
+          <span onClick={handleShowDelete} className="cursor-pointer px-3 bg-[hsl(var(--destructive))] hover:opacity-75 transition-all duration-300 ease-in-out text-sm">Delete project <Clear /></span>
+          <div className={` ${!showDelete && "hidden"} z-40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 bg-[hsl(var(--secondary))] rounded-md shadow-[hsl(var(--destructive))] shadow-md flex flex-col justify-center items-center gap-6`}>
+          <p onClick={handleShowDelete} className="cursor-pointer px-3 bg-[hsl(var(--destructive))] hover:opacity-75">X</p>
+            <p>Delete {title}?</p>
+            <Button onClick={handleDelete} className="bg-[hsl(var(--destructive))]">Delete</Button>
+          </div>
         </h4>
         <div className="flex justify-between items-center gap-4">
           <Button disabled={isSaving} onClick={handleSaveProject} className='md:px-16 2xl:px-20 bg-[hsl(var(--accent))]'>{isSaving ? "Saving..." : "Save"}</Button>
