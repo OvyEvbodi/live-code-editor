@@ -12,11 +12,16 @@ const SideNav = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const authStatus = auth.onAuthStateChanged(cred => {
-      if (cred) {
-        setIsLoggedIn(true)      }
-    })
-    return (() => authStatus())
+    try {
+      const authStatus = auth.onAuthStateChanged(cred => {
+        if (cred) {
+          setIsLoggedIn(true)
+        }
+      })
+      return (() => authStatus())
+    } catch(error) {
+      console.log(error)
+    }
   }, [router])
   
 

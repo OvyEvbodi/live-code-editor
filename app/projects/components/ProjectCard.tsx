@@ -1,8 +1,8 @@
 "use client"
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { BookmarkBorder, Bookmark, Loyalty } from "@mui/icons-material";
+import {  useState } from "react";
+import { Loyalty } from "@mui/icons-material";
 import { EditProject } from "@/redux/user.slice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -48,7 +48,6 @@ const ProjectCard = (props: ProjectCardProps) => {
         updateDoc(docRef, {
           projects: projData
         })
-        
       }
     } catch (error) {
       console.log(error)

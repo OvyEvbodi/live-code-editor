@@ -3,7 +3,8 @@ import { auth } from "@/config/firebase.config";
 
 export const signInWithGoogle = async () => {
   const googleProvider = new GoogleAuthProvider();
-  const credentials = await signInWithPopup(auth, googleProvider);
+  signInWithPopup(auth, googleProvider)
+  .catch(error => console.log(error));
 };
 
 export const authSignOut = async () => {
@@ -30,6 +31,5 @@ export const signInWithGithub = async () => {
     // The AuthCredential type that was used.
     const credential = GithubAuthProvider.credentialFromError(error);
     console.log(error)
-
   });
 };

@@ -63,9 +63,32 @@ const userSlice = createSlice({
     },
     setSearchString: ( state, action ) => {
       state.searchString = action.payload;
+    },
+    clearTab: ( state, action ) => {
+      switch(action.payload) {
+        case "htmlCode":
+          state.DisplayProject.htmlCode = "";
+          break;
+        case "cssCode":
+          state.DisplayProject.cssCode = "";
+          break;
+        case "jsCode": state.DisplayProject.jsCode = "";
+      }
+    },
+    setCode: ( state, action ) => {
+      switch(action.payload.code) {
+        case "htmlCode":
+          state.DisplayProject.htmlCode = action.payload.value;
+          break;
+        case "cssCode":
+          state.DisplayProject.cssCode = action.payload.value;
+          break;
+        case "jsCode":
+          state.DisplayProject.jsCode = action.payload.value;
+      }
     }
   }
 });
 
 export default userSlice.reducer;
-export const { loginUser, signoutUser, EditProject, clearWorkspace, setSearchString } = userSlice.actions;
+export const { loginUser, signoutUser, EditProject, clearWorkspace, setSearchString, clearTab, setCode } = userSlice.actions;

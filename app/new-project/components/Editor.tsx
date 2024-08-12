@@ -17,9 +17,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import UserData from "@/app/projects/components/UserData";
 import { db } from "@/config/firebase.config";
-import { doc, getDoc, updateDoc, arrayUnion, collection, query, where, increment, DocumentSnapshot, DocumentData  } from "firebase/firestore"; 
+import { doc, getDoc, updateDoc, arrayUnion, increment } from "firebase/firestore"; 
 import { useSelector, useDispatch } from "react-redux";
-import { clearWorkspace } from "@/redux/user.slice";
+import { clearWorkspace, clearTab, setCode } from "@/redux/user.slice";
 import { RootState } from "@/redux/store";
 import { useToast } from "@/components/ui/use-toast";
 import { ProjectCardProps }  from "@/app/projects/components/ProjectCard";
@@ -33,12 +33,32 @@ export interface EditProjectProps {
   prevTitle: string;
 }
 
+const SettingsTool = ({codeTab}: any ) => {
+  const [showClearTab, setShowClearTab] = useState(false);
+  const dispatch = useDispatch();
+  const handleClearTab = (code: string) => {
+    setShowClearTab(!showClearTab)
+    dispatch(clearTab(code))
+  };
+
+  return (
+    <div className="cursor-pointer px-1">
+      <div onClick={() => setShowClearTab(!showClearTab)}>
+        <Settings fontSize="small"/>
+        <ExpandMore fontSize="small"/>
+      </div>
+      <div className={` ${showClearTab ? "" : "hidden"} z-20 absolute top-8 right-0 p-1 px-2 text-xs hover:bg-[hsl(var(--secondary))]`} >
+        <div onClick={() => handleClearTab(codeTab)}>clear tab</div>
+      </div>
+    </div>
+  )
+};
 
 const Editor = () => {
   const [cssPlaceholder ] = useState(`h1 {
   color: #fff;
 }
-    `);
+  `);
   const html = useSelector((state: RootState) => state.user.DisplayProject.htmlCode);
   const css = useSelector((state: RootState) => state.user.DisplayProject.cssCode);
   const js = useSelector((state: RootState) => state.user.DisplayProject.jsCode);
@@ -46,9 +66,8 @@ const Editor = () => {
   const prevTitle = useSelector((state: RootState) => state.user.DisplayProject.title);
   const projectId = useSelector((state: RootState) => state.user.DisplayProject.projectId);
 
-
   const [htmlCode, setHtmlCode ] = useState(html);
-  const [ cssCode, setCssCode ] = useState(css)
+  const [ cssCode, setCssCode ] = useState(css);
   const [ jsCode, setJsCode ] = useState(js);
   const [ output, setOutput ] = useState(PrevOutput);
   const [ title, setTitle ] = useState(prevTitle);
@@ -57,22 +76,18 @@ const Editor = () => {
   const id = useSelector((state: RootState) => state.user.id);
   const author = useSelector((state: RootState) => state.user.displayName);
   const picture = useSelector((state: RootState) => state.user.profilePicUrl);
-  
+
   const { toast } = useToast();
   const router = useRouter();
   const dispatch = useDispatch();
 
   const handleClear = () => {
     dispatch(clearWorkspace())
-    console.log(html)
-
-    console.log(htmlCode)
     setHtmlCode(html)
     setCssCode(css)
     setJsCode(js)
     setOutput(PrevOutput)
     setTitle(prevTitle)
-    console.log(htmlCode)
   };
 
   const handleSaveProject = async () => {
@@ -153,8 +168,10 @@ const Editor = () => {
     setIsSaving(false)
   };
 
-
   useEffect(() => {
+    setHtmlCode(html)
+    setCssCode(css)
+    setJsCode(js)
     const handlePreview = () => {
       setOutput(`
 <html>
@@ -169,7 +186,7 @@ const Editor = () => {
       `)
     };
     handlePreview()
-  }, [htmlCode, cssCode, jsCode])
+  }, [html, css, js, htmlCode, cssCode, jsCode])
 
   return (
     <div>
@@ -198,15 +215,12 @@ const Editor = () => {
             <ResizablePanelGroup direction="horizontal">
               <ResizablePanel>
                 <section className="h-full flex flex-col">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between relative">
                     <div className="flex gap-2 p-1 px-4 bg-[hsl(var(--secondary))]">
                       <FontAwesomeIcon icon={faHtml5} className="text-red-500 w-4"/>
                       <h5 className="text-sm font-bold">html</h5>
                     </div>
-                    <div className="cursor-pointer px-1">
-                    <Settings fontSize="small"/>
-                    <ExpandMore fontSize="small"/>
-                    </div>
+                    <SettingsTool codeTab="htmlCode" />
                   </div>
                   <div className="flex-grow mt-2 p-2 border-x border-[hsl(var(--accent))]">
                     <CodeMirror
@@ -215,7 +229,7 @@ const Editor = () => {
                       value={htmlCode} 
                       height="400px"
                       extensions={[javascript({ jsx: true })]}
-                      onChange={(value, viewUpdate) => setHtmlCode(value)}
+                      onChange={(value, viewUpdate) => dispatch(setCode({code:"htmlCode", value}))}
                     />
                   </div>
                 </section>
@@ -223,15 +237,12 @@ const Editor = () => {
               <ResizableHandle withHandle />
               <ResizablePanel>
                 <section className="h-full flex flex-col">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between relative">
                     <div className="flex gap-2 p-1 px-4 bg-[hsl(var(--secondary))]">
                       <FontAwesomeIcon icon={faCss3Alt} className="text-blue-500 w-4"/>
                       <h5 className="text-sm font-bold">css</h5>
                     </div>
-                    <div className="cursor-pointer px-1">
-                      <Settings fontSize="small"/>
-                      <ExpandMore fontSize="small"/>
-                    </div>
+                    <SettingsTool codeTab="cssCode"/>
                   </div>
                   <div className="flex-grow mt-2 p-2">
                     <CodeMirror
@@ -240,7 +251,7 @@ const Editor = () => {
                       value={cssCode} 
                       height="400px"
                       extensions={[javascript({ jsx: true })]}
-                      onChange={(value, viewUpdate) => setCssCode(value)}
+                      onChange={(value, viewUpdate) => dispatch(setCode({code:"cssCode", value}))}
                     />
                   </div>
                 </section>
@@ -248,24 +259,23 @@ const Editor = () => {
               <ResizableHandle withHandle />
               <ResizablePanel>
                 <section className="h-full flex flex-col">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between relative">
                     <div className="flex gap-2 p-1 px-4 bg-[hsl(var(--secondary))]">
                       <FontAwesomeIcon icon={faJs} className="text-yellow-500  w-4"/>
                       <h5 className="text-sm font-bold">js</h5>
                     </div>
                     <div className="cursor-pointer px-1">
-                    <Settings fontSize="small"/>
-                    <ExpandMore fontSize="small"/>
+                    <SettingsTool codeTab="jsCode" />
                     </div>
                   </div>
                   <div className="flex-grow mt-2 p-2 border-x border-[hsl(var(--accent))]">
                     <CodeMirror
                       theme={tokyoNight}
                       placeholder="console.log('Caditor!');"
-                      value={jsCode} 
+                      value={jsCode}
                       height="400px"
                       extensions={[javascript({ jsx: true })]}
-                      onChange={(value, viewUpdate) => setJsCode(value)}
+                      onChange={(value, viewUpdate) => dispatch(setCode({code:"jsCode", value}))}
                     />
                   </div>
                 </section>

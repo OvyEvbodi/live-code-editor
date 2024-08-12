@@ -11,11 +11,16 @@ const SignIn = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const authStatus = auth.onAuthStateChanged(cred => {
-      if (cred) {
-        router.push("/")      }
-    })
-    return (() => authStatus())
+    try {
+      const authStatus = auth.onAuthStateChanged(cred => {
+        if (cred) {
+          router.push("/")
+        }
+      })
+      return (() => authStatus())
+    } catch(error) {
+      console.log(error)
+    }
   }, [router])
   
   return (
