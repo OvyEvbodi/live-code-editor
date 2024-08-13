@@ -3,7 +3,6 @@
 import { useDispatch } from "react-redux";
 import { setSearchString } from "@/redux/user.slice"
 import { Search } from "@mui/icons-material";
-import { useState } from "react";
 
 const SearchBar = () => {
 
@@ -17,7 +16,7 @@ const SearchBar = () => {
   return (
     <div className="flex gap-4 rounded-md p-3 bg-[hsl(var(--secondary))] hover:shadow-lg hover:shadow-[hsl(var(--accent))]">
       <Search />
-      <input onChange={ handleSearch }  className="flex-1  bg-transparent outline-none" type="text" placeholder="search for a project..." />
+      <input onChange={ handleSearch }  className="flex-1 bg-transparent outline-none smooth" type="text" placeholder="search for a project..." />
     </div>
   )
 }

@@ -9,6 +9,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { loginUser, signoutUser } from "@/redux/user.slice";
 import { useDispatch } from "react-redux";
 import UserData from "@/app/projects/components/UserData";
+import UserSettings from "@/components/UserSettings";
 
 
 const HomeScreen = () => {
@@ -66,9 +67,10 @@ const HomeScreen = () => {
       <UserData />
       <div>
         <h2>This is your home</h2>
-        <p>Your data and settings will appear here</p>
+        <p>Your personal data and settings will appear here</p>
       </div>
       <Button onClick={handleSignOut}>Sign out</Button>
+      <UserSettings />
     </div>
   )
 }
